@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "Seizoenen": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": "organisatie"
+    },
+    "Users": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "Inschrijvingen": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": "organisatie"
+    },
+    "Organisaties": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
