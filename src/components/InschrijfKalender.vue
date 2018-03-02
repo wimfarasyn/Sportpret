@@ -64,6 +64,14 @@ export default {
           var groep = this.inschrijving.groep
           var max = this.seizoenFix['Max' + groep]
           if (this.ingeschrevenData && this.ingeschrevenData.hasOwnProperty(d[0])) { rObj['highlight'] = INGESCHREVEN } else if (d[1][groep] >= max) { rObj['highlight'] = VOLZET } else { rObj['highlight'] = VRIJ }
+          var aantalInschrijvingenKleuters = d[1]['Kleuters']
+          var maxAantalKleuters = this.seizoenFix['MaxKleuters']
+          var aantalInschrijvingenLeerlingen = d[1]['Leerlingen']
+          var maxAantalLeerlingen = this.seizoenFix['MaxLeerlingen']
+          rObj['popover'] = {
+            label: 'Kleuters: ' + aantalInschrijvingenKleuters + '/' + maxAantalKleuters + ' || ' + 'Leerlingen: ' + aantalInschrijvingenLeerlingen + '/' + maxAantalLeerlingen,
+            hideIndicator: true
+          }
           rObj['dates'] = myStrToDate(d[0])
           rObj['customData'] = d
           return rObj
