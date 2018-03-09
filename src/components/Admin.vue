@@ -62,6 +62,19 @@
                 </b-form>
             </div>
         </div>
+        <hr>
+        <h2>Consistency check - aantal inschrijvingen per seizoen</h2>
+        <div class="row m-2">
+          <div class="col-3">
+            <div v-for="(seizoen, key) in seizoenen" :key="key">
+              <b-btn v-if='seizoen.Actief' variant="link" href="" @click='consistencyCheck(seizoen)'>{{ seizoen.Naam }}</b-btn>
+            </div>
+          </div>
+          <div class="col-9">
+            <b-table small responsive :items="consistencyCheckData" :fields="consistenyCheckFields"></b-table>
+            <b-btn type="reset" class="m-1" @click='consistencyCheckData = []'>Reset</b-btn>
+          </div>
+        </div>
     </b-container>
 </template>
 
@@ -96,13 +109,16 @@ export default {
         Naam: '',
         Email: '',
         Organisatie: ''
-      }
+      },
+      consistenyCheckFields: ['Datum', 'Kleuters via Inschrijvingen', 'Kleuters via Seizoen', 'Leerlingen via Inschrijvingen', 'Leerlingen via Seizoen'],
+      consistencyCheckData: []
     }
   },
   firebase: {
     seizoenen: db.ref('Seizoenen').orderByChild('Sequence'),
     organisaties: db.ref('Organisaties'),
-    users: db.ref('Users')
+    users: db.ref('Users'),
+    inschrijvingen: db.ref('Inschrijvingen')
   },
   beforeCreate () {
     document.body.className = 'bg-warning'
@@ -212,6 +228,25 @@ export default {
       this.user.Email = ''
       this.user.Naam = ''
       this.user.Organisatie = ''
+    },
+    consistencyCheck: function (s) {
+      var dateCheck = []
+      this.$bindAsArray('inschrijvingsLijst', db.ref('Inschrijvingen').orderByChild('seizoen').equalTo(s['.key']))
+      var datumLijst = Object.keys(s.Data)
+      for (var i = 0; i < datumLijst.length; i++) {
+        var temp = {}
+        var tempCellVariants = {}
+        temp['Datum'] = datumLijst[i]
+        temp['Kleuters via Inschrijvingen'] = this.inschrijvingsLijst.filter(inschrijving => { if (inschrijving.groep === 'Kleuters' && inschrijving.Data.hasOwnProperty(datumLijst[i])) return inschrijving }).length
+        temp['Kleuters via Seizoen'] = s['Data'][datumLijst[i]].Kleuters
+        tempCellVariants['Kleuters via Seizoen'] = (temp['Kleuters via Inschrijvingen'] === temp['Kleuters via Seizoen']) ? 'success' : 'warning'
+        temp['Leerlingen via Inschrijvingen'] = this.inschrijvingsLijst.filter(inschrijving => { if (inschrijving.groep === 'Leerlingen' && inschrijving.Data.hasOwnProperty(datumLijst[i])) return inschrijving }).length
+        temp['Leerlingen via Seizoen'] = s['Data'][datumLijst[i]].Leerlingen
+        tempCellVariants['Leerlingen via Seizoen'] = (temp['Leerlingen via Inschrijvingen'] === temp['Leerlingen via Seizoen']) ? 'success' : 'warning'
+        temp['_cellVariants'] = tempCellVariants
+        dateCheck[i] = temp
+      }
+      this.consistencyCheckData = dateCheck
     }
   }
 }
