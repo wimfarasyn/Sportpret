@@ -123,10 +123,13 @@ export default {
       groepen: GROEPEN,
       form: { organisatie: null, naam: '', voornaam: '', gdatum: '', groep: null, gsm: '', postcode: '', opmerking: '' },
       isDisabled: false,
-      key: ''
+      key: '',
+      huidigeGroep: ''
     }
   },
-  firebase: { orgs: db.ref('Organisaties'), inschrijvingen: db.ref('Inschrijvingen')
+  firebase: {
+    orgs: db.ref('Organisaties'),
+    inschrijvingen: db.ref('Inschrijvingen')
   },
   validations: {
     form: { naam: { required },
@@ -152,6 +155,10 @@ export default {
     inschrijvingKey: function (newKey, oldKey) {
       this.populateForm(newKey)
       this.setDisabled()
+    },
+    key: function (newKey, oldKey) {
+      this.populateForm(newKey)
+      this.setDisabled()
     }
   },
   created () {
@@ -164,6 +171,7 @@ export default {
         db.ref('Inschrijvingen').orderByKey().equalTo(newKey).once('value').then(r => {
           var rr = r.val()
           this.form = rr[newKey]
+          this.huidigeGroep = this.form.groep
         })
       }
     },
@@ -187,6 +195,7 @@ export default {
     },
     onReset () {
       this.form.naam = ''; this.form.voornaam = ''; this.form.gdatum = ''; this.form.groep = null; this.form.gsm = ''; this.form.postcode = ''; this.form.opmerking = ''; this.form.organisatie = null
+      this.huidigeGroep = ''
       this.$v.$reset()
       this.$emit('wissen')
     },
@@ -203,9 +212,31 @@ export default {
           postcode: this.form.postcode,
           opmerking: this.form.opmerking
         }
-        db.ref('Inschrijvingen').child(this.inschrijvingKey).update(updateObject)
-        this.$emit('geupdated', this.inschrijvingKey)
-        this.setDisabled()
+        if (this.form.groep !== this.huidigeGroep) { // groep veranderd!!! ==> dagen opslaan, inschrijving verwijderen, totalen per dag in seizoen aanpassen, nieuwe inschrijving zonder dagen aanmaken + popup
+          if (confirm('De leeftijdsgroep is veranderd! De reeds ingeschreven dagen worden geannuleerd. Klik vervolgens op bevestigen om de gegevens van het kind up te daten. Klik dan op bewerken in het kalendergedeelte en kies data om voor in te schrijven.')) {
+            this.$bindAsObject('inschrijving', db.ref('Inschrijvingen').child(this.inschrijvingKey))
+            var ingeschrevenData = this.inschrijving.Data
+            db.ref('Inschrijvingen').child(this.inschrijvingKey).remove()
+            this.$unbind('inschrijving')
+            this.$bindAsObject('seizoenLive', db.ref('Seizoenen').child(this.$root.$data.state.seizoen['.key']))
+            var seizoenData = this.seizoenLive.Data
+            for (var d in ingeschrevenData) {
+              seizoenData[d][this.huidigeGroep] = seizoenData[d][this.huidigeGroep] - 1
+            }
+            this.$firebaseRefs.seizoenLive.child('Data').update(seizoenData)
+            var ref = db.ref('Inschrijvingen').push()
+            ref.set(updateObject)
+            this.key = ref.key
+            this.setDisabled()
+            this.$emit('groepVeranderd', this.key)
+          } else { // oops, ontdekt dat we toch niet de leeftijdsgroep wouden veranderen ...
+            this.form.groep = this.huidigeGroep
+          }
+        } else { // groep niet veranderd, gewoon inschrijvingsdata updaten
+          db.ref('Inschrijvingen').child(this.inschrijvingKey).update(updateObject)
+          this.$emit('geupdated', this.inschrijvingKey)
+          this.setDisabled()
+        }
       } else { alert('Check Formulier') }
     },
     toggle () {

@@ -237,10 +237,10 @@ export default {
         var temp = {}
         var tempCellVariants = {}
         temp['Datum'] = datumLijst[i]
-        temp['Kleuters via Inschrijvingen'] = this.inschrijvingsLijst.filter(inschrijving => { if (inschrijving.groep === 'Kleuters' && inschrijving.Data.hasOwnProperty(datumLijst[i])) return inschrijving }).length
+        temp['Kleuters via Inschrijvingen'] = this.inschrijvingsLijst.filter(inschrijving => { if (inschrijving.groep === 'Kleuters' && inschrijving.Data && inschrijving.Data.hasOwnProperty(datumLijst[i])) return inschrijving }).length
         temp['Kleuters via Seizoen'] = s['Data'][datumLijst[i]].Kleuters
         tempCellVariants['Kleuters via Seizoen'] = (temp['Kleuters via Inschrijvingen'] === temp['Kleuters via Seizoen']) ? 'success' : 'warning'
-        temp['Leerlingen via Inschrijvingen'] = this.inschrijvingsLijst.filter(inschrijving => { if (inschrijving.groep === 'Leerlingen' && inschrijving.Data.hasOwnProperty(datumLijst[i])) return inschrijving }).length
+        temp['Leerlingen via Inschrijvingen'] = this.inschrijvingsLijst.filter(inschrijving => { if (inschrijving.groep === 'Leerlingen' && inschrijving.Data && inschrijving.Data.hasOwnProperty(datumLijst[i])) return inschrijving }).length
         temp['Leerlingen via Seizoen'] = s['Data'][datumLijst[i]].Leerlingen
         tempCellVariants['Leerlingen via Seizoen'] = (temp['Leerlingen via Inschrijvingen'] === temp['Leerlingen via Seizoen']) ? 'success' : 'warning'
         temp['_cellVariants'] = tempCellVariants

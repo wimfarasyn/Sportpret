@@ -29,7 +29,7 @@
           </b-list-group-item>
         </b-list-group>
         <b-modal id="details" centered :hide-header="true" :hide-footer="true" @shown="openModal" return-focus="document.body">
-          <appInschrijfFormulier :inschrijvingKey="geselecteerdeInschrijving" mode="Display"></appInschrijfFormulier>
+          <appInschrijfFormulier :inschrijvingKey="geselecteerdeInschrijving" mode="Display" v-on:groepVeranderd="selecteer"></appInschrijfFormulier>
         </b-modal>
       </b-col>
       <b-col cols="2">
@@ -113,6 +113,9 @@ export default {
     },
     openModal: function () {
       bus.$emit('modalShown')
+    },
+    selecteer: function (key) {
+      this.selecteerInschrijving(key)
     }
   },
   mounted () {
