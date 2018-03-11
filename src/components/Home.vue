@@ -56,7 +56,7 @@ export default {
       return this.inschrijvingen.filter(i => { if (i.seizoen === this.$root.$data.state.seizoen['.key']) return i }).length
     },
     aantalInschrijvingen: function () {
-      return this.inschrijvingen.map(i => Object.keys(i.Data).length).reduce((a, b) => { return a + b })
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.$root.$data.state.seizoen['.key']) return i }).map(i => Object.keys(i.Data).length).reduce((a, b) => { return a + b }, 0)
     }
   },
   firebase: function () {
