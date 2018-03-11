@@ -5,26 +5,23 @@
         <appHeader></appHeader>
       </b-col>
     </b-row>
-    <b-row align-h="center" class="m-2">
-      <b-col cols="12" class="m-3">
-        <center>
-          <b-btn variant="warning" size="lg" @click="schrijfIn">SCHRIJF EEN KIND IN</b-btn>
-        </center>
+    <b-row class="justify-content-center">
+      <b-col cols="12" class="m-3 text-center">
+        <b-btn variant="warning" size="lg" @click="schrijfIn">SCHRIJF EEN KIND IN</b-btn>
       </b-col>
-      <b-col cols="12" class="m-3">
-        <center>
-          <b-btn variant="warning" size="lg" @click="overzicht">BEKIJK INSCHRIJVINGEN</b-btn>
-        </center>
+      <b-col cols="12" class="m-3 text-center">
+        <b-btn variant="warning" size="lg" @click="overzicht" class='position-relative'>BEKIJK INSCHRIJVINGEN
+          <div class='myBadges'>
+              <div class='d-inline-flex m-0 p-0'><b-badge variant='light' class='text-warning' style='box-shadow: 2px 2px 1px grey'>{{ aantalIngeschrevenKinderen }}</b-badge><small class='text-secondary pl-1'>Ingeschreven kinderen</small></div>
+              <div class='d-inline-flex mt-1 p-0'><b-badge variant='light' class='text-warning' style='box-shadow: 2px 2px 1px grey'>{{ aantalInschrijvingen }}</b-badge><small class='text-secondary pl-1'>Inschrijvingen</small></div>
+          </div>
+        </b-btn>
       </b-col>
-      <b-col cols="12" class="m-3">
-        <center>
+      <b-col cols="12" class="m-3 text-center">
           <b-btn v-if="auth.sportpret" variant="warning" size="lg" @click="organisatie">ORGANISATIE</b-btn>
-        </center>
       </b-col>
-      <b-col cols="12" class="m-3">
-        <center>
+      <b-col cols="12" class="m-3 text-center">
           <b-btn v-if="auth.sportpret" variant="warning" size="lg" @click="admin">ADMINISTRATIE</b-btn>
-        </center>
       </b-col>
     </b-row>
   </b-container>
@@ -32,6 +29,8 @@
 
 <script>
 import MyHeader from './MyHeader.vue'
+import firebaseApp from '../firebase/firebase'
+const db = firebaseApp.database()
 
 export default {
   name: 'home',
@@ -48,8 +47,26 @@ export default {
     auth: function () {
       return {
         user: this.$root.$data.state.auth.user,
+        organisatie: this.$root.$data.state.auth.organisatie,
         userID: this.$root.$data.state.auth.userID,
         sportpret: this.$root.$data.state.auth.organisatie === 'Sportpret'
+      }
+    },
+    aantalIngeschrevenKinderen: function () {
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.$root.$data.state.seizoen['.key']) return i }).length
+    },
+    aantalInschrijvingen: function () {
+      return this.inschrijvingen.map(i => Object.keys(i.Data).length).reduce((a, b) => { return a + b })
+    }
+  },
+  firebase: function () {
+    if (this.auth.sportpret) {
+      return {
+        inschrijvingen: db.ref('Inschrijvingen')
+      }
+    } else {
+      return {
+        inschrijvingen: db.ref('Inschrijvingen').orderByChild('organisatie').equalTo(this.auth.organisatie)
       }
     }
   },
@@ -73,4 +90,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.myBadges {
+  position: absolute;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  vertical-align: middle;
+  top: 1%;
+  left: 97%;
+  text-align: left;
+}
 </style>
