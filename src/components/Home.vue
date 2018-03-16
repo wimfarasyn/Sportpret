@@ -60,7 +60,7 @@ export default {
       return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).length
     },
     aantalInschrijvingen: function () {
-      return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).map(i => Object.keys(i.Data).length).reduce((a, b) => { return a + b }, 0)
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).map(i => { if (i.hasOwnProperty('Data')) { return Object.keys(i.Data).length } else { return 0 } }).reduce((a, b) => { return a + b }, 0)
     }
   },
   firebase: function () {
