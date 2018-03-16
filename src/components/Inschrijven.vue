@@ -5,7 +5,8 @@
         <appHeader></appHeader>
       </b-col>
     </b-row>
-    <b-row v-if='!(!auth.sportpret && seizoen.Afgesloten)' align-h="center" class="m-2 p-2">
+    <b-row v-if='!(!auth.sportpret && seizoen.Afgesloten)
+    ' align-h="center" class="m-2 p-2">
       <b-col align="center">
         <appInschrijfFormulier v-on:ingeschreven="volgendeStap" v-on:wissen="enkelFormulier" :inschrijvingKey="key" mode="New"></appInschrijfFormulier>
       </b-col>
