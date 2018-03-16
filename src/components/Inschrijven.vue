@@ -5,13 +5,18 @@
         <appHeader></appHeader>
       </b-col>
     </b-row>
-    <b-row align-h="center" class="m-2 p-2">
+    <b-row v-if='!(!auth.sportpret && seizoen.Afgesloten)' align-h="center" class="m-2 p-2">
       <b-col align="center">
         <appInschrijfFormulier v-on:ingeschreven="volgendeStap" v-on:wissen="enkelFormulier" :inschrijvingKey="key" mode="New"></appInschrijfFormulier>
       </b-col>
       <b-col cols="1" align="center"></b-col>
       <b-col align="center">
         <appInschrijfKalender v-if="toonKalender" :inschrijvingKey="key"></appInschrijfKalender>
+      </b-col>
+    </b-row>
+    <b-row v-else aligh-h='center' class='m-2 p-2'>
+      <b-col align='center'>
+        <div>Het seizoen is afgesloten voor nieuwe inschrijvingen.</div>
       </b-col>
     </b-row>
   </b-container>

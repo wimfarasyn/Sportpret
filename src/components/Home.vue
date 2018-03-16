@@ -7,7 +7,8 @@
     </b-row>
     <b-row class="justify-content-center">
       <b-col cols="12" class="m-3 text-center">
-        <b-btn variant="warning" size="lg" @click="schrijfIn">SCHRIJF EEN KIND IN</b-btn>
+        <b-btn v-if='!(!auth.sportpret && seizoen.Afgesloten)' variant="warning" size="lg" @click="schrijfIn">SCHRIJF EEN KIND IN</b-btn>
+        <div v-else>Het seizoen is afgesloten voor nieuwe inschrijvingen.</div>
       </b-col>
       <b-col cols="12" class="m-3 text-center">
         <b-btn variant="warning" size="lg" @click="overzicht" class='position-relative'>BEKIJK INSCHRIJVINGEN
@@ -52,11 +53,14 @@ export default {
         sportpret: this.$root.$data.state.auth.organisatie === 'Sportpret'
       }
     },
+    seizoen: function () {
+      return this.$root.$data.state.seizoen
+    },
     aantalIngeschrevenKinderen: function () {
-      return this.inschrijvingen.filter(i => { if (i.seizoen === this.$root.$data.state.seizoen['.key']) return i }).length
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).length
     },
     aantalInschrijvingen: function () {
-      return this.inschrijvingen.filter(i => { if (i.seizoen === this.$root.$data.state.seizoen['.key']) return i }).map(i => Object.keys(i.Data).length).reduce((a, b) => { return a + b }, 0)
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).map(i => Object.keys(i.Data).length).reduce((a, b) => { return a + b }, 0)
     }
   },
   firebase: function () {

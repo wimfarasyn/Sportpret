@@ -21,6 +21,7 @@
                     <b-form-group label="Naam" horizontal><b-form-input v-model="seizoen.Naam"></b-form-input></b-form-group>
                     <b-form-group label="Data" horizontal><b-form-input v-model="seizoen.Data"></b-form-input></b-form-group>
                     <b-form-group label="Actief" horizontal><b-form-checkbox v-model="seizoen.Actief"></b-form-checkbox></b-form-group>
+                    <b-form-group label="Afgesloten" horizontal><b-form-checkbox v-model="seizoen.Afgesloten"></b-form-checkbox></b-form-group>
                     <b-form-group label="Max Inschrijvingen per kind" horizontal><b-form-input v-model="seizoen.MaxPerKind"></b-form-input></b-form-group>
                     <b-form-group label="Max kleuters per dag" horizontal><b-form-input v-model="seizoen.MaxKleuters"></b-form-input></b-form-group>
                     <b-form-group label="Max leerlingen per dag" horizontal><b-form-input v-model="seizoen.MaxLeerlingen"></b-form-input></b-form-group>
@@ -96,6 +97,7 @@ export default {
         Naam: '',
         Data: '',
         Actief: null,
+        Afgesloten: null,
         MaxPerKind: '',
         MaxKleuters: '',
         MaxLeerlingen: ''
@@ -137,6 +139,7 @@ export default {
             Sequence: this.seizoen.Sequence,
             Data: dataObjectNew,
             Actief: this.seizoen.Actief,
+            Afgesloten: this.seizoen.Afgesloten,
             MaxPerKind: this.seizoen.MaxPerKind,
             MaxKleuters: this.seizoen.MaxKleuters,
             MaxLeerlingen: this.seizoen.MaxLeerlingen
@@ -167,6 +170,7 @@ export default {
             Sequence: this.seizoen.Sequence,
             Data: dataObjectUpdate,
             Actief: this.seizoen.Actief,
+            Afgesloten: this.seizoen.Afgesloten,
             MaxPerKind: this.seizoen.MaxPerKind,
             MaxKleuters: this.seizoen.MaxKleuters,
             MaxLeerlingen: this.seizoen.MaxLeerlingen
@@ -180,6 +184,7 @@ export default {
       this.seizoen.Naam = ''
       this.seizoen.Data = ''
       this.seizoen.Actief = null
+      this.seizoen.Afgesloten = null
       this.seizoen.MaxPerKind = ''
       this.seizoen.MaxKleuters = ''
       this.seizoen.MaxLeerlingen = ''
@@ -190,6 +195,7 @@ export default {
       this.seizoen.Naam = s.Naam
       this.seizoen.Data = Object.keys(s.Data).toString()
       this.seizoen.Actief = s.Actief
+      this.seizoen.Afgesloten = s.Afgesloten
       this.seizoen.MaxPerKind = s.MaxPerKind
       this.seizoen.MaxKleuters = s.MaxKleuters
       this.seizoen.MaxLeerlingen = s.MaxLeerlingen
