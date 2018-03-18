@@ -114,23 +114,23 @@ export default {
       if (this.selectedDate && this.seizoenLive) { return this.seizoenLive.Data[this.selectedDate]['Kleuters'] }
     },
     aantalLaatsteKleuters: function () {
-      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Kleuters' && this.selectedDate === Object.keys(i.Data).sort().slice(-1)[0]) return i }).length }
+      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Kleuters' && i.Data && this.selectedDate === Object.keys(i.Data).sort().slice(-1)[0]) return i }).length }
     },
     aantalAanwezigKleuters: function () {
-      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Kleuters' && i.Data[this.selectedDate] === 'Aanwezig') return i }).length }
+      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Kleuters' && i.Data && i.Data[this.selectedDate] === 'Aanwezig') return i }).length }
     },
     aantalLeerlingen: function () {
       if (this.selectedDate && this.seizoenLive) { return this.seizoenLive.Data[this.selectedDate]['Leerlingen'] }
     },
     aantalLaatsteLeerlingen: function () {
-      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Leerlingen' && this.selectedDate === Object.keys(i.Data).sort().slice(-1)[0]) return i }).length }
+      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Leerlingen' && i.Data && this.selectedDate === Object.keys(i.Data).sort().slice(-1)[0]) return i }).length }
     },
     aantalAanwezigLeerlingen: function () {
-      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Leerlingen' && i.Data[this.selectedDate] === 'Aanwezig') return i }).length }
+      if (this.selectedDate && this.seizoenLive) { return this.inschrijvingen.filter(i => { if (i.groep === 'Leerlingen' && i.Data && i.Data[this.selectedDate] === 'Aanwezig') return i }).length }
     },
     inschrijvingenDag: function () {
-      if (this.selectedDate) {
-        return this.inschrijvingen.filter(i => { if (i['Data'].hasOwnProperty(this.selectedDate)) return i }).sort(function (a, b) {
+      if (this.selectedDate && this.inschrijvingen) {
+        return this.inschrijvingen.filter(i => { if (i['Data'] && i['Data'].hasOwnProperty(this.selectedDate)) return i }).sort(function (a, b) {
           var x = a['voornaam'].toLowerCase()
           var y = b['voornaam'].toLowerCase()
           return ((x < y) ? -1 : ((x > y) ? 1 : 0))

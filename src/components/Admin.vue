@@ -76,6 +76,11 @@
             <b-btn type="reset" class="m-1" @click='consistencyCheckData = []'>Reset</b-btn>
           </div>
         </div>
+        <hr>
+        <h2>Download alles</h2>
+        <div v-for='(s, k) in seizoenen' :key='k'>
+          <download-excel :data='download[s[".key"]].data' :fields='download[s[".key"]].fields' :name='download[s[".key"]].name' type='csv'><small class='mb-1 p-1'>Download {{ s.Naam }}...</small></download-excel>
+        </div>
     </b-container>
 </template>
 
@@ -116,9 +121,93 @@ export default {
       consistencyCheckData: []
     }
   },
+  computed: {
+    download: function () {
+      var rObj = {}
+      // eslint-disable-next-line
+      this.seizoenen.forEach(s => {
+        rObj[s['.key']] = {}
+        rObj[s['.key']]['data'] = []
+        var inschrijvingenKleuters = this.inschrijvingen.filter(i => { if (i.seizoen === s['.key'] && i.groep === 'Kleuters') return i }).slice(0).sort(function (a, b) {
+          var x = a['voornaam'].toLowerCase()
+          var y = b['voornaam'].toLowerCase()
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+        })
+        var inschrijvingenLeerlingen = this.inschrijvingen.filter(i => { if (i.seizoen === s['.key'] && i.groep === 'Leerlingen') return i }).slice(0).sort(function (a, b) {
+          var x = a['voornaam'].toLowerCase()
+          var y = b['voornaam'].toLowerCase()
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+        })
+        // eslint-disable-next-line
+        inschrijvingenKleuters.forEach(i => {
+          var index = rObj[s['.key']]['data'].push({
+            'org': this.organisaties[i.organisatie].Naam,
+            'voornaam': i.voornaam,
+            'naam': i.naam,
+            'gdatum': i.gdatum + '\t',
+            'groep': i.groep,
+            'gsm': i.gsm + '\t',
+            'postcode': i.postcode + '\t',
+            'opmerking': i.opmerking,
+            'aantal': (i.Data) ? Object.keys(i.Data).length : 0,
+            'aanwezig': (i.Data) ? Object.keys(i.Data).filter(d => { if (i.Data[d] === 'Aanwezig') return d }).length : 0
+          })
+          Object.keys(s.Data).forEach(d => {
+            if (i.Data && i.Data.hasOwnProperty(d)) {
+              rObj[s['.key']]['data'][index - 1][d] = i['Data'][d]
+            } else {
+              rObj[s['.key']]['data'][index - 1][d] = ''
+            }
+          })
+        })
+        // eslint-disable-next-line
+        inschrijvingenLeerlingen.forEach(i => {
+          var index = rObj[s['.key']]['data'].push({
+            'org': this.organisaties[i.organisatie].Naam,
+            'voornaam': i.voornaam,
+            'naam': i.naam,
+            'gdatum': i.gdatum + '\t',
+            'groep': i.groep,
+            'gsm': i.gsm + '\t',
+            'postcode': i.postcode + '\t',
+            'opmerking': i.opmerking,
+            'aantal': (i.Data) ? Object.keys(i.Data).length : 0,
+            'aanwezig': (i.Data) ? Object.keys(i.Data).filter(d => { if (i.Data[d] === 'Aanwezig') return d }).length : 0
+          })
+          Object.keys(s.Data).forEach(d => {
+            if (i.Data && i.Data.hasOwnProperty(d)) {
+              rObj[s['.key']]['data'][index - 1][d] = i['Data'][d]
+            } else {
+              rObj[s['.key']]['data'][index - 1][d] = ''
+            }
+          })
+        })
+        rObj[s['.key']]['fields'] = {
+          'Organisatie': 'org',
+          'Voornaam': 'voornaam',
+          'Familienaam': 'naam',
+          'Geboortedatum': 'gdatum',
+          'Groep': 'groep',
+          'GSM': 'gsm',
+          'Postcode': 'postcode',
+          'Opmerking': 'opmerking',
+          'Aantal inschrijvingen': 'aantal',
+          'Aantal effectief gekomen': 'aanwezig'
+        }
+        Object.keys(s.Data).forEach(d => {
+          rObj[s['.key']]['fields'][d] = d
+        })
+        rObj[s['.key']]['name'] = s.Naam + '.csv'
+      })
+      return rObj
+    }
+  },
   firebase: {
     seizoenen: db.ref('Seizoenen').orderByChild('Sequence'),
-    organisaties: db.ref('Organisaties'),
+    organisaties: {
+      source: db.ref('Organisaties'),
+      asObject: true
+    },
     users: db.ref('Users'),
     inschrijvingen: db.ref('Inschrijvingen')
   },

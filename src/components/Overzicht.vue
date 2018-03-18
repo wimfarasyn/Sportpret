@@ -96,32 +96,34 @@ export default {
       }
     },
     download: function () {
-      var rObj = {}
-      rObj['data'] = []
-      // eslint-disable-next-line
-      this.gesorteerdeInschrijvingen.forEach(i => {
-        rObj['data'].push({
-          'org': this.organisatieNaam,
-          'voornaam': i.voornaam,
-          'naam': i.naam,
-          'groep': i.groep,
-          'gsm': i.gsm + '\t',
-          'aantalDagen': Object.keys(i.Data).length,
-          'aantalAanwezig': Object.keys(i.Data).filter(d => { if (i.Data[d] === 'Aanwezig') return d }).length
+      if (this.inschrijvingen) {
+        var rObj = {}
+        rObj['data'] = []
+        // eslint-disable-next-line
+        this.gesorteerdeInschrijvingen.forEach(i => {
+          rObj['data'].push({
+            'org': this.organisatieNaam,
+            'voornaam': i.voornaam,
+            'naam': i.naam,
+            'groep': i.groep,
+            'gsm': i.gsm + '\t',
+            'aantalDagen': (i.Data) ? Object.keys(i.Data).length : 0,
+            'aantalAanwezig': (i.Data) ? Object.keys(i.Data).filter(d => { if (i.Data[d] === 'Aanwezig') return d }).length : 0
+          })
         })
-      })
-      rObj['fields'] = {
-        'Organisatie': 'org',
-        'Voornaam': 'voornaam',
-        'Familienaam': 'naam',
-        'Groep': 'groep',
-        'GSM': 'gsm',
-        'Aantal dagen ingeschreven': 'aantalDagen',
-        'Aantal dagen effectief deelgenomen': 'aantalAanwezig'
+        rObj['fields'] = {
+          'Organisatie': 'org',
+          'Voornaam': 'voornaam',
+          'Familienaam': 'naam',
+          'Groep': 'groep',
+          'GSM': 'gsm',
+          'Aantal dagen ingeschreven': 'aantalDagen',
+          'Aantal dagen effectief deelgenomen': 'aantalAanwezig'
+        }
+        var today = new Date()
+        rObj['name'] = 'Sportpret-' + this.seizoen.Naam + '-' + today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + '.csv'
+        return rObj
       }
-      var today = new Date()
-      rObj['name'] = 'Sportpret-' + this.seizoen.Naam + '-' + today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + '.csv'
-      return rObj
     }
   },
   firebase: {
