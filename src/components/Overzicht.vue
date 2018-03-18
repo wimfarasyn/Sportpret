@@ -17,6 +17,7 @@
     </div>
     <b-row class="m-2" v-if="organisatie">
       <b-col cols="4">
+        <download-excel :data='download.data' :fields='download.fields' :name='download.name' type='csv'><small class='mb-1 p-1'>Download...</small></download-excel>
         <b-list-group class="pre-scrollable">
           <b-list-group-item class="noSelect m-0 p-0" v-for="(i, k) in gesorteerdeInschrijvingen" :key="k" @click="selecteerInschrijving(i['.key'])"
             :active="i['.key'] == geselecteerdeInschrijving">
@@ -87,12 +88,40 @@ export default {
     },
     gesorteerdeInschrijvingen: function () {
       if (this.inschrijvingen) {
-        return this.inschrijvingen.slice(0).sort(function (a, b) {
+        return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).slice(0).sort(function (a, b) {
           var x = a['voornaam'].toLowerCase()
           var y = b['voornaam'].toLowerCase()
           return ((x < y) ? -1 : ((x > y) ? 1 : 0))
         })
       }
+    },
+    download: function () {
+      var rObj = {}
+      rObj['data'] = []
+      // eslint-disable-next-line
+      this.gesorteerdeInschrijvingen.forEach(i => {
+        rObj['data'].push({
+          'org': this.organisatieNaam,
+          'voornaam': i.voornaam,
+          'naam': i.naam,
+          'groep': i.groep,
+          'gsm': i.gsm + '\t',
+          'aantalDagen': Object.keys(i.Data).length,
+          'aantalAanwezig': Object.keys(i.Data).filter(d => { if (i.Data[d] === 'Aanwezig') return d }).length
+        })
+      })
+      rObj['fields'] = {
+        'Organisatie': 'org',
+        'Voornaam': 'voornaam',
+        'Familienaam': 'naam',
+        'Groep': 'groep',
+        'GSM': 'gsm',
+        'Aantal dagen ingeschreven': 'aantalDagen',
+        'Aantal dagen effectief deelgenomen': 'aantalAanwezig'
+      }
+      var today = new Date()
+      rObj['name'] = 'Sportpret-' + this.seizoen.Naam + '-' + today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + '.csv'
+      return rObj
     }
   },
   firebase: {

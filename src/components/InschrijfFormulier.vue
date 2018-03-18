@@ -164,6 +164,7 @@ export default {
   created () {
     bus.$on('modalShown', this.setDisabled)
     if (this.mode === 'New' && !this.auth.sportpret) { this.form.organisatie = this.$root.$data.state.auth.organisatie }
+    if (this.$route.params.id1) { this.populateForm(this.$route.params.id1) }
   },
   methods: {
     populateForm (newKey) {

@@ -8,7 +8,7 @@
     <b-row v-if='!(!auth.sportpret && seizoen.Afgesloten)
     ' align-h="center" class="m-2 p-2">
       <b-col align="center">
-        <appInschrijfFormulier v-on:ingeschreven="volgendeStap" v-on:wissen="enkelFormulier" :inschrijvingKey="key" mode="New"></appInschrijfFormulier>
+        <appInschrijfFormulier v-on:ingeschreven="volgendeStap" v-on:wissen="enkelFormulier" :inschrijvingKey="key" :mode='$route.params.id1 ? "Display" : "New"'></appInschrijfFormulier>
       </b-col>
       <b-col cols="1" align="center"></b-col>
       <b-col align="center">
@@ -57,6 +57,14 @@ export default {
     },
     enkelFormulier: function () {
       this.toonKalender = false
+    }
+  },
+  created () {
+    if (this.$route.params.id1) {
+      this.key = this.$route.params.id1
+      this.toonKalender = true
+    } else {
+      this.key = ''
     }
   }
 }

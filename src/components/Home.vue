@@ -13,13 +13,19 @@
       <b-col cols="12" class="m-3 text-center">
         <b-btn variant="warning" size="lg" @click="overzicht" class='position-relative'>BEKIJK INSCHRIJVINGEN
           <div class='myBadges'>
-              <div class='d-inline-flex m-0 p-0'><b-badge variant='light' class='text-warning' style='box-shadow: 2px 2px 1px grey'>{{ aantalIngeschrevenKinderen }}</b-badge><small class='text-secondary pl-1'>Ingeschreven kinderen</small></div>
+              <div class='d-inline-flex m-0 p-0'>
+                <b-badge variant='light' class='text-warning' style='box-shadow: 2px 2px 1px grey'>{{ aantalIngeschrevenKinderen }}</b-badge>
+                <small class='text-secondary pl-1'>Ingeschreven kinderen
+                  <span v-if='aantalIngeschrevenKinderen > 0'>(
+                    <span v-if='aantalIngeschrevenKleuters > 0'>{{ aantalIngeschrevenKleuters }} kleuter<span v-if='aantalIngeschrevenKleuters > 1'>s</span>, </span>
+                    <span v-if='aantalIngeschrevenLeerlingen > 0'>{{ aantalIngeschrevenLeerlingen}} leerling<span v-if='aantalIngeschrevenLeerlingen > 1'>en</span></span>
+                  )</span></small></div>
               <div class='d-inline-flex mt-1 p-0'><b-badge variant='light' class='text-warning' style='box-shadow: 2px 2px 1px grey'>{{ aantalInschrijvingen }}</b-badge><small class='text-secondary pl-1'>Inschrijvingen</small></div>
           </div>
         </b-btn>
       </b-col>
       <b-col cols="12" class="m-3 text-center">
-          <b-btn v-if="auth.sportpret" variant="warning" size="lg" @click="organisatie">ORGANISATIE</b-btn>
+          <b-btn v-if="auth.sportpret" variant="warning" size="lg" @click="organisatie">ORGANISATIE PER DAG</b-btn>
       </b-col>
       <b-col cols="12" class="m-3 text-center">
           <b-btn v-if="auth.sportpret" variant="warning" size="lg" @click="admin">ADMINISTRATIE</b-btn>
@@ -58,6 +64,12 @@ export default {
     },
     aantalIngeschrevenKinderen: function () {
       return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).length
+    },
+    aantalIngeschrevenKleuters: function () {
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key'] && i.groep === 'Kleuters') return i }).length
+    },
+    aantalIngeschrevenLeerlingen: function () {
+      return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key'] && i.groep === 'Leerlingen') return i }).length
     },
     aantalInschrijvingen: function () {
       return this.inschrijvingen.filter(i => { if (i.seizoen === this.seizoen['.key']) return i }).map(i => { if (i.hasOwnProperty('Data')) { return Object.keys(i.Data).length } else { return 0 } }).reduce((a, b) => { return a + b }, 0)

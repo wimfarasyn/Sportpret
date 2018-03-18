@@ -122,7 +122,15 @@ export default {
         this.$firebaseRefs.inschrijving.remove()
         this.$emit('verwijderd')
       }
-      if (this.displayOnly) { this.setDisplayOnly(true) } else { this.$router.push('/Home') }
+      if (this.displayOnly) {
+        this.setDisplayOnly(true)
+      } else {
+        if (this.$route.params.id2) {
+          this.$router.push('/organisatie/' + this.$route.params.id2)
+        } else {
+          this.$router.push('/home')
+        }
+      }
     },
     toggle () {
       this.setDisplayOnly(!this.isDisplayOnly)

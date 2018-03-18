@@ -12,11 +12,13 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    { path: '/', name: 'Landing', component: Landing },
-    { path: '/home', name: 'Home', component: Home, meta: { requiresAuth: true } },
-    { path: '/inschrijven', name: 'Inschrijven', component: Inschrijven, meta: { requiresAuth: true } },
-    { path: '/overzicht', name: 'Overzicht', component: Overzicht, meta: { requiresAuth: true } },
-    { path: '/organisatie', name: 'Organisatie', component: Organisatie, meta: { requiresAuth: true } },
-    { path: '/admin', name: 'Admin', component: Admin, meta: { requiresAuth: true } }
+    { path: '/', component: Landing },
+    { path: '/home', component: Home, meta: { requiresAuth: true } },
+    { path: '/inschrijven', component: Inschrijven, meta: { requiresAuth: true } },
+    { path: '/inschrijven/:id1/:id2', component: Inschrijven, meta: { requiresAuth: true } },
+    { path: '/overzicht', component: Overzicht, meta: { requiresAuth: true } },
+    { path: '/organisatie', component: Organisatie, meta: { requiresAuth: true } },
+    { path: '/organisatie/:id', component: Organisatie, meta: { requiresAuth: true } },
+    { path: '/admin', component: Admin, meta: { requiresAuth: true } }
   ]
 })

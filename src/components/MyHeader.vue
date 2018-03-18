@@ -4,7 +4,7 @@
       <h3>SPORTPRET INSCHRIJVINGEN</h3>
     </b-col>
     <b-col cols="6 text-left p-0">
-      <b-btn variant="link" href="" to="Home" class="pl-1 pr-0">
+      <b-btn variant="link" href="" to="/home" class="pl-1 pr-0">
         <img src="../assets/home.png" height="20px">
       </b-btn>
       <b-btn id="logoutPopover" variant="link" href="#" class="p-0">

@@ -16,6 +16,7 @@
     "v-calendar": "^0.6.1",
     "vue": "^2.5.11",
     "vue-awesome": "^2.3.4",
+    "vue-json-excel": "^0.2.1",
     "vue-router": "^3.0.1",
     "vue-web-storage": "^2.0.0",
     "vuefire": "^1.4.5",

@@ -11,7 +11,9 @@ import Storage from 'vue-web-storage'
 import 'vue-awesome/icons/edit'
 import 'vue-awesome/icons/graduation-cap'
 import 'vue-awesome/icons/exclamation-triangle'
+import 'vue-awesome/icons/file-excel-o'
 import Icon from 'vue-awesome/components/Icon'
+import JsonExcel from 'vue-json-excel'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -30,6 +32,7 @@ Vue.use(Storage, {
   prefix: 'sportpret__'
 })
 Vue.component('icon', Icon)
+Vue.component('downloadExcel', JsonExcel)
 
 router.beforeEach((to, from, next) => {
   const currentUser = firebaseApp.auth().currentUser
