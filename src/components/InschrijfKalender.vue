@@ -12,7 +12,7 @@
     </div>
     <div class="row mt-3 justify-content-center">
       <b-btn class="btn-warning" v-if="!isDisplayOnly" @click="bevestig">Bevestig inschrijving</b-btn>
-      <b-btn class="btn-warning" v-if="isDisplayOnly" @click="toggle">Bewerken</b-btn>
+      <b-btn class="btn-warning" v-if="(($root.$data.state.auth.organisatie === 'Sportpret') && isDisplayOnly) || (!($root.$data.state.auth.organisatie === 'Sportpret') && !seizoenFix.Afgesloten && isDisplayOnly)" @click="toggle">Bewerken</b-btn>
     </div>
   </div>
 </template>
