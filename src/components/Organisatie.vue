@@ -9,6 +9,7 @@
       <b-col cols='4'>
         <v-calendar v-bind='calendarProps' :attributes='attributes' @dayclick='dayClicked' class='mt-3'></v-calendar>
         <download-excel v-if='selectedDate' :data='download.data' :fields='download.fields' :name='download.name' :title='selectedDate' type='csv'><small class='mb-1 p-1'>Download...</small></download-excel>
+        <download-excel v-if='selectedDate' :data='bulksms.data' :fields='bulksms.fields' :name='bulksms.name' type='csv'><small class='mb-1 p-1'>Download voor BulkSMS...</small></download-excel>
       </b-col>
       <b-col cols='4'>
         <h5>Kleuters</h5>
@@ -214,6 +215,38 @@ export default {
           rObj['fields'][d] = d
         })
         rObj['name'] = this.seizoen.Naam + '-' + this.selectedDate + '.csv'
+        return rObj
+      }
+    },
+    bulksms: function () {
+      if (this.selectedDate) {
+        var rObj = {}
+        rObj['data'] = []
+        // eslint-disable-next-line
+        this.inschrijvingenDagKleuters.forEach(i => {
+          rObj['data'].push({
+            'gsm': i.gsm + '\t',
+            'org': this.orgs[i.organisatie].Naam,
+            'voornaam': i.voornaam,
+            'naam': i.naam
+          })
+        })
+        // eslint-disable-next-line
+        this.inschrijvingenDagLeerlingen.forEach(i => {
+          rObj['data'].push({
+            'gsm': i.gsm + '\t',
+            'org': this.orgs[i.organisatie].Naam,
+            'voornaam': i.voornaam,
+            'naam': i.naam
+          })
+        })
+        rObj['fields'] = {
+          'GSM': 'gsm',
+          'Organisatie': 'org',
+          'Voornaam': 'voornaam',
+          'Familienaam': 'naam'
+        }
+        rObj['name'] = 'BulkSMS - ' + this.seizoen.Naam + '-' + this.selectedDate + '.csv'
         return rObj
       }
     }
